@@ -90,6 +90,39 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | User-resource
+    |--------------------------------------------------------------------------
+    |
+    | Optionele JsonResource-klasse die de user-payload in auth-responses vormt
+    | (me/login/register/passkey). Null = het kale model (met casts/appends).
+    | Zet dit om bv. rollen of berekende velden mee te sturen.
+    |
+    */
+
+    'user_resource' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Features (route-vlaggen)
+    |--------------------------------------------------------------------------
+    |
+    | Bepaalt welke optionele routes worden geregistreerd. Core (login, logout,
+    | me, profiel, wachtwoord wijzigen, wachtwoordherstel) staat altijd aan.
+    | Zet features uit die een project niet gebruikt.
+    |
+    */
+
+    'features' => [
+        'registration'       => true,
+        'email_verification' => true,
+        'email_change'       => true,
+        'avatar'             => true,
+        'preferences'        => true,
+        'passkeys'           => true,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Extra validatieregels
     |--------------------------------------------------------------------------
     |

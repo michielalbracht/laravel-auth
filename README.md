@@ -86,8 +86,17 @@ php artisan vendor:publish --tag=auth-module-config
 | `token_ttl.email_change` | `60` min | Geldigheid e-mailwijziging |
 | `token_ttl.password_reset` | `60` min | Geldigheid resetlink |
 | `user_with` | `[]` | **Projectspecifiek**: relaties op auth-responses |
+| `user_resource` | `null` | Optionele JsonResource voor de user-payload (anders het model) |
+| `features` | alle `true` | Route-vlaggen: `registration`, `email_verification`, `email_change`, `avatar`, `preferences`, `passkeys` |
 | `register_rules` | `[]` | **Projectspecifiek**: extra registratievelden |
 | `profiel_rules` | `[]` | **Projectspecifiek**: extra profielvelden |
+
+**Features**: core-routes (login, logout, me, profiel, wachtwoord wijzigen, wachtwoordherstel)
+staan altijd aan. Zet via `features` de optionele groepen uit die je niet gebruikt — handig voor
+projecten die bv. geen zelfregistratie of e-mailverificatie willen.
+
+**user_resource**: standaard geeft `/me`/login het model terug (met casts/appends). Zet een
+JsonResource om de vorm volledig te bepalen (bv. rollen of berekende velden meesturen).
 
 Voorbeeld host-config (samenlesgeven):
 
@@ -96,6 +105,15 @@ Voorbeeld host-config (samenlesgeven):
 'user_with' => ['vakken', 'beheerdeVakken', 'vakCombinaties', 'methodes'],
 'register_rules' => ['school' => 'nullable|string|max:255'],
 'profiel_rules'  => ['school' => 'nullable|string|max:255', 'bio' => 'nullable|string|max:1000'],
+```
+
+Voorbeeld host-config (KMS — geen zelfregistratie, eigen user-vorm):
+
+```php
+'mode' => 'session',
+'user_resource' => App\Http\Resources\UserResource::class,
+'features' => ['registration' => false, 'email_verification' => false, 'email_change' => false,
+               'avatar' => false, 'preferences' => false, 'passkeys' => true],
 ```
 
 ## Migraties
