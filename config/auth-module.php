@@ -73,6 +73,7 @@ return [
         'email_verification' => 60 * 24, // 24 uur
         'email_change'       => 60,      // 1 uur
         'password_reset'     => 60,      // 1 uur
+        'magic_link'         => 15,      // 15 minuten
     ],
 
     /*
@@ -119,7 +120,21 @@ return [
         'avatar'             => true,
         'preferences'        => true,
         'passkeys'           => true,
+        'magic_link'         => false,   // passwordless login via e-maillink (opt-in)
+        'impersonation'      => false,   // inloggen-als (opt-in)
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Impersonatie-autorisatie
+    |--------------------------------------------------------------------------
+    |
+    | Gate-ability die bepaalt wie mag impersoneren (krijgt de doel-user als
+    | argument). Null = geen extra check (gebruik dan eigen middleware/gate).
+    |
+    */
+
+    'impersonate_ability' => null,
 
     /*
     |--------------------------------------------------------------------------

@@ -87,7 +87,9 @@ php artisan vendor:publish --tag=auth-module-config
 | `token_ttl.password_reset` | `60` min | Geldigheid resetlink |
 | `user_with` | `[]` | **Projectspecifiek**: relaties op auth-responses |
 | `user_resource` | `null` | Optionele JsonResource voor de user-payload (anders het model) |
-| `features` | alle `true` | Route-vlaggen: `registration`, `email_verification`, `email_change`, `avatar`, `preferences`, `passkeys` |
+| `features` | zie onder | Route-vlaggen: `registration`, `email_verification`, `email_change`, `avatar`, `preferences`, `passkeys` (default `true`); `magic_link`, `impersonation` (default `false`) |
+| `impersonate_ability` | `null` | Gate-ability die bepaalt wie mag impersoneren (krijgt de doel-user) |
+| `token_ttl.magic_link` | `15` min | Geldigheid magic-link |
 | `register_rules` | `[]` | **Projectspecifiek**: extra registratievelden |
 | `profiel_rules` | `[]` | **Projectspecifiek**: extra profielvelden |
 
@@ -97,6 +99,13 @@ projecten die bv. geen zelfregistratie of e-mailverificatie willen.
 
 **user_resource**: standaard geeft `/me`/login het model terug (met casts/appends). Zet een
 JsonResource om de vorm volledig te bepalen (bv. rollen of berekende velden meesturen).
+
+**Magic-link** (`features.magic_link`): passwordless login. `POST /magic-link` (vraag link aan,
+anti-enumeratie) + `POST /magic-link/login` (token→sessie). Vereist een werkende mailer.
+
+**Impersonatie** (`features.impersonation`): `POST /impersonate/{user}` + `POST /stop-impersonating`
+(ingelogd). Autorisatie via `impersonate_ability` (Gate, in de host gedefinieerd); de
+oorspronkelijke gebruiker wordt in de sessie bewaard onder `impersonating_from`.
 
 Voorbeeld host-config (samenlesgeven):
 

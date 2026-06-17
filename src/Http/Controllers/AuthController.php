@@ -2,7 +2,7 @@
 
 namespace AlbrachtSystems\Auth\Http\Controllers;
 
-use AlbrachtSystems\Auth\Concerns\RespondsWithUser;
+use AlbrachtSystems\Auth\Concerns\InteractsWithAuthSession;
 use AlbrachtSystems\Auth\Mail\EmailVerificatieMail;
 use AlbrachtSystems\Auth\Mail\EmailWijzigenMail;
 use AlbrachtSystems\Auth\Mail\WachtwoordResetMail;
@@ -20,7 +20,7 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    use RespondsWithUser;
+    use InteractsWithAuthSession;
 
     public function register(Request $request): JsonResponse
     {
@@ -44,10 +44,7 @@ class AuthController extends Controller
         }
 
         // In sessie-modus de gebruiker direct inloggen.
-        if ($this->isSessionMode()) {
-            Auth::guard(config('auth-module.guard'))->login($user);
-            $this->regenerateSession($request);
-        }
+        $this->establishSession($request, $user);
 
         return $this->authResponse($request, $user, 201);
     }
@@ -300,33 +297,6 @@ class AuthController extends Controller
         $user->update(['password' => null]);
 
         return response()->json(['message' => 'Wachtwoord uitgeschakeld.']);
-    }
-
-    /**
-     * Bouwt de auth-response. In token-modus wordt een Bearer-token bijgevoegd;
-     * in sessie-modus draagt de sessiecookie de authenticatie.
-     */
-    private function authResponse(Request $request, Model $user, int $status = 200): JsonResponse
-    {
-        $payload = ['user' => $this->metRelaties($user)];
-
-        if (! $this->isSessionMode()) {
-            $payload['token'] = $user->createToken('auth_token')->plainTextToken;
-        }
-
-        return response()->json($payload, $status);
-    }
-
-    private function isSessionMode(): bool
-    {
-        return config('auth-module.mode', 'session') === 'session';
-    }
-
-    private function regenerateSession(Request $request): void
-    {
-        if ($request->hasSession()) {
-            $request->session()->regenerate();
-        }
     }
 
     /**

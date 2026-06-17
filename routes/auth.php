@@ -1,6 +1,8 @@
 <?php
 
 use AlbrachtSystems\Auth\Http\Controllers\AuthController;
+use AlbrachtSystems\Auth\Http\Controllers\ImpersonationController;
+use AlbrachtSystems\Auth\Http\Controllers\MagicLinkController;
 use AlbrachtSystems\Auth\Http\Controllers\PasskeyController;
 use AlbrachtSystems\Auth\Http\Controllers\ProfielController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +17,8 @@ $features = array_merge([
     'avatar'             => true,
     'preferences'        => true,
     'passkeys'           => true,
+    'magic_link'         => false,
+    'impersonation'      => false,
 ], config('auth-module.features', []));
 
 Route::prefix(config('auth-module.route_prefix', 'api'))
@@ -38,6 +42,10 @@ Route::prefix(config('auth-module.route_prefix', 'api'))
         if ($features['passkeys']) {
             Route::get('/passkeys/login/options', [PasskeyController::class, 'loginOptions']);
             Route::post('/passkeys/login', [PasskeyController::class, 'login']);
+        }
+        if ($features['magic_link']) {
+            Route::post('/magic-link', [MagicLinkController::class, 'aanvragen']);
+            Route::post('/magic-link/login', [MagicLinkController::class, 'login']);
         }
 
         // ─── Ingelogd ─────────────────────────────────────────────────────
@@ -70,6 +78,10 @@ Route::prefix(config('auth-module.route_prefix', 'api'))
                 Route::post('/user/passkeys', [PasskeyController::class, 'register']);
                 Route::get('/user/passkeys', [PasskeyController::class, 'index']);
                 Route::delete('/user/passkeys/{passkey}', [PasskeyController::class, 'destroy']);
+            }
+            if ($features['impersonation']) {
+                Route::post('/impersonate/{user}', [ImpersonationController::class, 'start']);
+                Route::post('/stop-impersonating', [ImpersonationController::class, 'stop']);
             }
         });
     });
