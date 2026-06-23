@@ -33,8 +33,19 @@
                   </td>
                 </tr>
               </table>
+              <!-- Code-alternatief -->
+              <p style="margin:0 0 12px;font-size:14px;color:#6b7280;line-height:1.6;text-align:center;">
+                Of voer deze code in op de inlogpagina:
+              </p>
+              <table cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
+                <tr>
+                  <td style="background:#f3f4f6;border-radius:8px;padding:14px 28px;">
+                    <span style="font-size:30px;font-weight:700;letter-spacing:8px;color:#111827;font-family:'Courier New',monospace;">{{ $code }}</span>
+                  </td>
+                </tr>
+              </table>
               <p style="margin:0 0 8px;font-size:13px;color:#9ca3af;line-height:1.6;">
-                Deze link is 15 minuten geldig en kan één keer gebruikt worden. Als je geen inloglink hebt aangevraagd, kun je deze e-mail negeren.
+                De link en code zijn 15 minuten geldig en kunnen één keer gebruikt worden. Als je geen inloglink hebt aangevraagd, kun je deze e-mail negeren.
               </p>
               <p style="margin:0;font-size:12px;color:#d1d5db;word-break:break-all;">
                 Of kopieer deze URL: {{ $magicUrl }}
