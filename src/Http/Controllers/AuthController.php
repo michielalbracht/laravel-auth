@@ -214,7 +214,7 @@ class AuthController extends Controller
             return response()->json(['status' => 'ongeldig'], 422);
         }
 
-        if (now()->diffInMinutes($record->created_at) > config('auth-module.token_ttl.email_change')) {
+        if (now()->diffInMinutes($record->created_at, true) > config('auth-module.token_ttl.email_change')) {
             DB::table('email_change_tokens')->where('user_id', $userId)->delete();
             return response()->json(['status' => 'verlopen'], 422);
         }
@@ -271,7 +271,7 @@ class AuthController extends Controller
             throw ValidationException::withMessages(['token' => ['Deze resetlink is ongeldig.']]);
         }
 
-        if (now()->diffInMinutes($record->created_at) > config('auth-module.token_ttl.password_reset')) {
+        if (now()->diffInMinutes($record->created_at, true) > config('auth-module.token_ttl.password_reset')) {
             DB::table('password_reset_tokens')->where('email', $request->email)->delete();
             throw ValidationException::withMessages(['token' => ['Deze resetlink is verlopen. Vraag een nieuwe aan.']]);
         }
